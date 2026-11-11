@@ -7,10 +7,12 @@ The repository's own rules and linter override these standards. These standards 
 
 ## Design
 - Write code a new teammate can follow without help: clear names, small functions with one job each, no clever tricks.
-- Match the existing architecture and conventions. Don't add a layer, interface or abstraction that has only one user.
+- Match the existing architecture and conventions.
+- **YAGNI: build for the requirements you have.** No options, flags, parameters, config, generic types, layers or extension points for needs that aren't in the plan. Duplication is cheaper than the wrong abstraction: extract on the third use, not the first.
+- **The simplest thing that fully works.** The fewest moving parts that meet every acceptance criterion without a resource-impact problem. Simple is not hacky: no special cases bolted on, no copy-paste where existing code fits. Prefer the change that fits the existing model, and one that removes code over one that adds it.
 - Change only what the task needs. No drive-by renames, reformatting or "while I'm here" fixes.
 - **Refactoring:** if the task would be better served by a refactor that makes the code more ergonomic, modular or readable, describe it and why, then **wait for approval** before doing it. If the task itself is a refactor, go ahead.
-- Performance: avoid obvious traps (N+1 queries, quadratic loops over data that can grow without bound, loading everything into memory), but don't optimise without evidence.
+- Performance: avoid obvious traps (N+1 queries, quadratic loops over data that can grow without bound, loading everything into memory), but don't optimise without evidence. How to judge the impact: [resource impact](resource-impact.md).
 - Leave no dead code, commented-out code or unused imports behind.
 
 ## Use what already exists

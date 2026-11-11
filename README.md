@@ -8,6 +8,7 @@ Personal, portable [Agent Skills](https://agentskills.io/specification) (`SKILL.
 |---|---|
 | [`lads-coder`](skills/lads-coder/SKILL.md) | Implementing an approved plan or a clearly specified change: test-first, small diffs, verified before done. |
 | [`lads-code-reviewer`](skills/lads-code-reviewer/SKILL.md) | Read-only review of a change against its plan and the code standards, compared with the main branch unless another base is given. |
+| [`lads-pr-writer`](skills/lads-pr-writer/SKILL.md) | Plain-language PR title and description: why, the moving parts and how they fit, how it was verified. Details are left to code review. |
 
 ## Install
 
@@ -21,7 +22,7 @@ npx skills add mrsalty/lads -g --skill lads-coder                           # on
 Or symlink manually:
 
 ```bash
-for skill in lads-coder lads-code-reviewer; do
+for skill in lads-coder lads-code-reviewer lads-pr-writer; do
   ln -s ~/repos/lads/skills/$skill ~/.claude/skills/$skill   # Claude Code
   ln -s ~/repos/lads/skills/$skill ~/.agents/skills/$skill   # Codex and most others
 done
@@ -29,7 +30,7 @@ done
 
 ## Shared files
 
-Files used by more than one skill live once in `shared/` (for example `code-standards.md` and `tests.md`). Each skill keeps a copy in its own `references/` folder, so it still works when installed on its own.
+Files used by more than one skill live once in `shared/` (for example `code-standards.md`, `tests.md`, `change-scope.md` and `resource-impact.md`). Each skill keeps a copy in its own `references/` folder, so it still works when installed on its own.
 
 - Edit only the file in `shared/`, then run `scripts/sync-shared.sh` to update every copy.
 - `scripts/sync-shared.sh --check` changes nothing and exits with an error if any copy is out of date.

@@ -3,7 +3,7 @@ name: lads-coder
 description: Implement an approved plan or a clearly specified code change in an existing repository with small cohesive diffs, test-first where feasible, following the repo's conventions, and verified with real command output before claiming done. Use when asked to implement, build, code, or fix something whose requirements are already agreed, or when acting as the Engineer / implementer role. Not for writing requirements, planning, code review, or QA.
 metadata:
   author: mrsalty
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Lads coder
@@ -22,13 +22,16 @@ You turn an agreed plan into working, tested code. You do not decide *what* to b
 2. Read the plan, then the code and tests it touches, including their callers. Learn the local patterns: naming, error handling, logging, test style, module boundaries.
 3. Confirm you are on the intended branch or worktree and that it is clean (or that you know what the existing changes are).
 4. Find the real commands for format, lint, type-check, test and build. Run the relevant ones once **before** changing anything, so you can tell pre-existing failures from failures you cause. Record that baseline.
+5. If the change touches anything listed in [resource impact](references/resource-impact.md), work out what makes it grow and how big that gets before designing. Treat any performance budget in the plan as an acceptance criterion.
 
 ## 2. Implement one step at a time
+
+**Choose the approach first.** Before writing code, sketch the simplest design that meets the acceptance criteria and fits the existing code (see *YAGNI* and *The simplest thing that fully works* in [the code standards](references/code-standards.md)). If there is a real alternative, compare them on clarity, simplicity and efficiency, in that order, and pick one. Mention the choice in the report only if it was a deliberate trade-off.
 
 For each plan step or acceptance criterion:
 
 1. **Build in vertical slices, test first** for behaviour worth documenting (see *Tests are documentation* in [the code standards](references/code-standards.md)). Write one test, run it, and see it fail *for the intended reason*; then write just enough code to make it pass; then take the next slice. Don't write the tests for later slices up front: they encode guesses about code that doesn't exist yet and end up testing its shape instead of its behaviour. If test-first is impractical, say why and choose another way to verify.
-2. **Make the minimum correct change.** Follow existing patterns. No unrelated refactors, new dependencies, or speculative abstractions unless the plan asks for them.
+2. **Make the minimum correct change.** Follow existing patterns. No unrelated refactors, new dependencies, or speculative abstractions unless the plan asks for them. Don't introduce the traps in [resource impact](references/resource-impact.md); if avoiding one would add real complexity, say so and ask.
 3. **Handle failure only where the code meets the outside world** (see *Errors: let it break* in [the code standards](references/code-standards.md)). Consider auth, permissions and backward compatibility where the change touches them.
 4. **Re-run** the focused test, then the surrounding suite. Look at the actual output and exit code.
 5. **Refactor while green**, then move to the next step.
@@ -48,6 +51,7 @@ Bound your attempts: after about three failed fix cycles on the same problem, st
 - Run format, lint, type-check, tests and build as appropriate to what you changed, fresh, after your last edit.
 - Map every acceptance criterion to evidence: a command and its observed result, or a reproducible manual check.
 - Give each criterion one status: `PASS`, `FAIL`, `BLOCKED`, or `NOT_RUN`. Never report a blocked or skipped check as passing. List pre-existing failures separately.
+- Measure performance only when [resource impact](references/resource-impact.md) says to, and give a budget PASS or FAIL like any other criterion.
 - If a `verification-before-completion` skill is available, follow it.
 
 You are **DONE** only when every planned item is implemented and every required check has passed with evidence. Otherwise report **BLOCKED** and say why.

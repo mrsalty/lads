@@ -34,4 +34,5 @@ Baseline before changes: <commands run and pre-existing failures, if any>
 
 ## Risks, limitations and open questions
 - ...
+<!-- Include a resource impact here only if you accepted one: the impact, why the implementation is still right, and the evidence. -->
 ```

@@ -3,7 +3,7 @@ name: lads-code-reviewer
 description: Review a code change against the plan or acceptance criteria it was built from and against the shared code standards, compared with the project's main branch unless another base is given. Read-only and evidence-based; ends with a list of findings and a verdict. Use when asked to review a branch, pull request, diff or work in progress, or when acting as the Reviewer role after lads-coder. Not for implementing fixes, planning, or QA.
 metadata:
   author: mrsalty
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Lads code reviewer
@@ -13,20 +13,18 @@ You decide whether a change does what was asked and is written to the standard. 
 ## 0. Gather the inputs
 
 - **What was asked:** the same plan, spec or acceptance criteria the implementer worked from. If none was given, ask for it. If there really is none, review against the standards only and say so in the verdict.
-- **The base to compare against:** the project's main branch, unless the user names a different base. With stacked pull requests, the base is the parent branch in the stack, not main. Find the main branch from the remote's default (`git symbolic-ref refs/remotes/origin/HEAD`); if that is unclear, ask. Fetch first and compare against the remote copy (e.g. `origin/main`), so a stale local branch doesn't hide or add changes.
+- **The base to compare against:** the project's main branch, unless the user names a different base. See [change scope](references/change-scope.md) for stacked pull requests and how to find it.
 - **The implementer's report,** if there is one. Every claim in it is something to verify, not a fact.
 - Do not read the implementer's conversation or reasoning. Work from the plan, the code and what you can observe.
 
 ## 1. Pin down the change
 
-1. Find the merge base: `git merge-base <base> HEAD`.
-2. The change under review is everything since the merge base, including uncommitted work: `git diff <merge-base>`, plus untracked files from `git status --short`. List the commits with `git log --oneline <merge-base>..HEAD`.
-3. If the base does not resolve or the change is empty, stop and say so.
+Follow [change scope](references/change-scope.md): resolve the head (the current branch unless one is named) and the base, find the merge base, and take everything since it, including uncommitted and untracked work when the head is the current branch. If the base or head does not resolve or the change is empty, stop and say so.
 
 ## 2. Understand before judging
 
 1. Read the repository's agent instructions and docs (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, README). They override the shared standards.
-2. Read [the code standards](references/code-standards.md).
+2. Read [the code standards](references/code-standards.md) and [resource impact](references/resource-impact.md).
 3. Read the plan. Then read every changed file in full, not only the changed lines, together with the callers of changed functions and the tests around them.
 
 ## 3. Re-run the checks
@@ -39,13 +37,13 @@ Work through every pass. Look for what is wrong, not for reasons to approve.
 
 1. **Scope.** Every acceptance criterion is implemented and tested, or explicitly reported as blocked. Nothing was changed that wasn't asked for: no unapproved refactors, new dependencies or drive-by edits. Deviations from the plan were approved.
 2. **Correctness.** Wrong conditions, off-by-one errors, unhandled cases at system boundaries, shared or concurrent state, resources not released, errors swallowed or hidden behind fallback values.
-3. **Standards.** Each section of the code standards. Skip anything a linter or formatter already enforces.
+3. **Standards.** Each section of the code standards. Skip anything a linter or formatter already enforces. Look hard at over-engineering and its opposite: for each new abstraction, option, parameter, layer or dependency, ask what in the plan needs it; if nothing does, it is a *should fix*. Also flag hacks: special cases or duplication where a simpler fit exists.
 4. **Tests.** Apply the testing rules in the standards. For each behaviour change, ask: if this change were reverted, would any test fail? If not, it is untested. A bug fix without a regression test is a finding.
 5. **Security.** Untrusted input validated where it enters, injection (SQL, shell, paths, templates), authorisation checks, secrets in code or config, private data in logs.
 6. **Contracts and compatibility.** Changed public interfaces, database migrations and whether they can be rolled back, config and environment changes, effects on existing data.
 7. **What should have changed but didn't.** Other callers of a changed function, similar code with the same bug, docs and config that now describe the old behaviour. This needs reading beyond the diff.
 8. **Hygiene.** Leftover debug output, dead or commented-out code, unused imports, comments that describe the change rather than the code, unrelated formatting.
-9. **Performance traps.** One query per item in a loop, work that grows quadratically with data size, unbounded data loaded into memory. Only the obvious ones; no speculative tuning.
+9. **Resource impact.** Where the change touches anything listed in [resource impact](references/resource-impact.md), go through its questions against the code. If the implementer accepted an impact and justified it, check the justification and the evidence; don't take them on trust. Re-run any benchmark or query plan they cite when you can. Raise only real problems, as findings: **blocking** for unbounded growth in memory or I/O on a production path, a missed performance budget, or a lock or migration that blocks a large or shared table; **should fix** for an obvious trap on data that is small today, or a justification the code doesn't support. Anything speculative is a question, not a defect. No speculative tuning.
 
 ## 5. Report
 
