@@ -3,7 +3,7 @@ name: lads-coder
 description: Implement an approved plan or a clearly specified code change in an existing repository with small cohesive diffs, test-first where feasible, following the repo's conventions, and verified with real command output before claiming done. Use when asked to implement, build, code, or fix something whose requirements are already agreed, or when acting as the Engineer / implementer role. Not for writing requirements, planning, code review, or QA.
 metadata:
   author: mrsalty
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Lads coder
@@ -48,6 +48,7 @@ Bound your attempts: after about three failed fix cycles on the same problem, st
 
 ## 4. Verify before claiming done
 
+- Read your whole diff line by line. For each changed line, be able to say which acceptance criterion or test it serves; revert any line you can't justify.
 - Run format, lint, type-check, tests and build as appropriate to what you changed, fresh, after your last edit.
 - Map every acceptance criterion to evidence: a command and its observed result, or a reproducible manual check.
 - Give each criterion one status: `PASS`, `FAIL`, `BLOCKED`, or `NOT_RUN`. Never report a blocked or skipped check as passing. List pre-existing failures separately.

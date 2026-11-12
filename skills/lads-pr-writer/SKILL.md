@@ -3,7 +3,7 @@ name: lads-pr-writer
 description: Write a pull request title and description in plain language, so a human understands in a couple of minutes why the change exists, what its moving parts are and how they fit together, and how it was verified. Implementation details are left to code review. Works from a ticket, acceptance criteria or requirements when given, or from the branch alone: the current or a named branch compared with main or another given base. Use when asked to write, draft, update or improve a pull request (or merge request) title or description, or when acting as the PR author after lads-coder and lads-code-reviewer. Not for reviewing code, implementing changes, or writing release notes.
 metadata:
   author: mrsalty
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Lads PR writer
@@ -17,6 +17,7 @@ You write what a busy teammate reads before opening the diff. When they finish, 
 - **Name code only as a signpost.** Mention a module, class or endpoint only when the reader needs it to find their way. Never list changed files.
 - **Leave out:** line-by-line changes, helper functions, renames and formatting, test inventories, code snippets. One exception: when the change *is* an interface (a new API, CLI command or config option), show a short usage example.
 - **The cut test:** if a sentence only makes sense while looking at the diff, it belongs to code review. Delete it.
+- **Self-contained.** A reader understands the change without opening other PRs or tickets; a stacked PR still explains itself. Link to others for context only.
 - **Length follows the idea, not the diff.** A one-line fix gets a sentence or two. A 2,000-line change with one idea still gets a short description.
 
 ## 0. Gather the inputs
@@ -31,8 +32,8 @@ You write what a busy teammate reads before opening the diff. When they finish, 
 ## 1. Understand the change
 
 1. Read the changed code well enough to know what each piece does. You are not auditing it.
-2. Group the changes into a few moving parts by purpose, usually one to four. Mechanical churn (renames, formatting, generated files, lockfiles) gets one line at most, or nothing.
-3. Find what changes for other people: behaviour users see, public contracts, config or environment variables, data migrations, new dependencies, rollout and rollback steps.
+2. Group the changes into a few moving parts by purpose, usually one to four. Mechanical churn (renames, formatting, generated files, lockfiles) gets one line at most, or nothing. If part of the diff is outside the title's scope, say what it is and why in one line.
+3. Find what changes for other people: behaviour users see, public contracts and existing callers, data already stored in an old format, config or environment variables, data migrations, new dependencies, rollout and rollback steps.
 
 ## 2. Write
 

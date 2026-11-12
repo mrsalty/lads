@@ -3,7 +3,7 @@ name: lads-code-reviewer
 description: Review a code change against the plan or acceptance criteria it was built from and against the shared code standards, compared with the project's main branch unless another base is given. Read-only and evidence-based; ends with a list of findings and a verdict. Use when asked to review a branch, pull request, diff or work in progress, or when acting as the Reviewer role after lads-coder. Not for implementing fixes, planning, or QA.
 metadata:
   author: mrsalty
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Lads code reviewer
@@ -33,7 +33,7 @@ Run the project's format, lint, type-check and test commands yourself. Running i
 
 ## 4. Review
 
-Work through every pass. Look for what is wrong, not for reasons to approve.
+Work through every pass. Look for what is wrong, not for reasons to approve. Be a nitpicker: go through the diff line by line and, for every changed line, ask why it is there. A line with no reason in the plan, a test or a direct consequence of either is a *should fix*. Challenge design choices, names and structure whenever a simpler or clearer option exists, even if the code works. Small points are still worth raising as *optional*.
 
 1. **Scope.** Every acceptance criterion is implemented and tested, or explicitly reported as blocked. Nothing was changed that wasn't asked for: no unapproved refactors, new dependencies or drive-by edits. Deviations from the plan were approved.
 2. **Correctness.** Wrong conditions, off-by-one errors, unhandled cases at system boundaries, shared or concurrent state, resources not released, errors swallowed or hidden behind fallback values.
@@ -50,6 +50,7 @@ Work through every pass. Look for what is wrong, not for reasons to approve.
 Write the review using [the report template](references/review-report.md).
 
 - Each finding states where (`path:line`), what is wrong, the evidence, why it matters, and a suggested fix.
+- Before reporting a defect, confirm it from the code or by running it. Describe it as a concrete case ("an empty list returns 0 instead of raising", not "may mishandle edge cases"). If you can't confirm it, ask it as a question.
 - Severity:
   - **blocking:** wrong behaviour, a security or data risk, a missing acceptance criterion, a failing check, or an unapproved change of scope;
   - **should fix:** works, but breaks the standards or leaves a real gap;
@@ -63,4 +64,5 @@ Write the review using [the report template](references/review-report.md).
 - Read-only: don't edit files, commit, stash, switch branches, push or comment on a pull request unless asked. Fetching is fine.
 - Never approve without having read the whole change and run the checks, or explained why a check could not run.
 - Cite only what you have seen. Never invent file paths, line numbers or command output.
-- No taste beyond the standards and the repository's rules, and no findings about what tooling already enforces.
+- Ground every challenge in the plan, the standards or the repository's rules, not personal taste, and raise no findings about what tooling already enforces.
+- Don't ask for extra validation, defensive code or stricter rules unless you can name the failure they prevent.
